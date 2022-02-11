@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
 import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore';
 
 export default class Signup extends Component {
 
@@ -11,7 +12,8 @@ export default class Signup extends Component {
             email: '',
             passw: '',
             button: true,
-            buttonFade: false
+            buttonFade: false,
+            username: ''
         }
         this.signup = this.signup.bind(this)
     }
@@ -26,7 +28,19 @@ export default class Signup extends Component {
         }
 
         auth().onAuthStateChanged(firebaseUser => {
-            this.props.navigation.navigate('MainScreen')
+            if (firebaseUser != null) {
+                this.props.navigation.replace('MainScreen')
+                firestore()
+                    .collection('Users')
+                    .doc(firebaseUser.uid)
+                    .set({
+                        name: this.state.username,
+                        email: this.state.email
+                    })
+                    .then(() => {
+                        console.log('User added!');
+                    });
+            }
         })
 
     }
@@ -41,6 +55,11 @@ export default class Signup extends Component {
             <View style={styles.container}>
                 <View style={styles.signupContainer}>
                     <Text style={styles.title}>Invest APP</Text>
+                    <TextInput
+                        style={styles.username}
+                        placeholder="Enter username"
+                        onChangeText={nameText => this.setState({ username: nameText })}
+                    />
                     <TextInput
                         style={styles.email}
                         placeholder="Enter email"
@@ -82,11 +101,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#003f5c',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     signupContainer: {
         width: '80%',
-        height: '50%',
+        height: '70%',
         alignItems: 'center'
     },
     title: {
@@ -94,11 +113,19 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         color: '#fb5b5a',
     },
-    email: {
+    username: {
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
         top: 50,
+        borderRadius: 20,
+        color: '#fff'
+    },
+    email: {
+        width: '90%',
+        height: 50,
+        backgroundColor: '#465881',
+        top: 80,
         borderRadius: 20,
         color: '#fff'
     },
