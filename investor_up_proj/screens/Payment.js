@@ -1,56 +1,211 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, View, NativeModules, NativeEventEmitter } from 'react-native';
+import { Button, StyleSheet, View, TextInput, TouchableOpacity, Text } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
+import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+
+var user = auth().currentUser;
 
 export default class payment extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            contact: '',
+            amount: null,
+            requestSent: false,
+            bodyContainerToRender: true,
+            total_amount: null
+        }
+        this._onPressButton = this._onPressButton.bind(this)
+    }
+
+    componentDidMount() {
+        firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .collection('Total_Payment')
+            .doc('total')
+            .get()
+            .then(documentSnapshot => {
+                if (documentSnapshot.exists) {
+                    this.setState({ total_amount: documentSnapshot.data().total_amount })
+                }
+            })
+    }
+
     _onPressButton() {
 
-        var orderID = 'order_'
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy0123456789";
-        for (var i = 0; i < 14; i++)
-            orderID += possible.charAt(Math.floor(Math.random() * 14));
-
-
-        console.log(orderID)
-
-
-        var options = {
-            description: 'Credits towards consultation',
-            image: 'https://i.imgur.com/3g7nmJC.png',
-            currency: 'INR',
-            key: 'rzp_live_dZAIxh9mgzdnl7',
-            amount: '100',
-            name: 'foo',
-            order_id: 'order_ItymcH65cAkZbN',
-            prefill: {
-                email: 'investapp123@gmail.com',
-                contact: '7867972157',
-                name: 'Razorpay Software'
-            },
-            theme: { color: '#F37254' }
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = '08';//String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        var end_month = ''
+        var end_year = ''
+        var endDate = ''
+        if (parseInt(mm) > 6) {
+            end_month = String(parseInt(mm) - 6);
+            end_year = today.getFullYear() + 1;
+            endDate = dd + '/' + end_month + '/' + end_year;
         }
-        RazorpayCheckout.open(options).then((data) => {
-            // handle success
-            if (data.razorpay_payment_id != NULL) {
-                alert(`Success: ${data.razorpay_payment_id}`);
+        else {
+            end_month = String(today.getMonth() + 7).padStart(2, '0');
+            endDate = dd + '/' + end_month + '/' + yyyy;
+        }
+
+        today = dd + '/' + mm + '/' + yyyy;
+        console.log(today)
+
+        console.log(endDate)
+
+        if (this.state.email != '' && this.state.contact != '' && this.state.amount != null && user != null) {
+            var options = {
+                description: 'Invest money and grow',
+                image: 'https://i.imgur.com/3g7nmJC.png',
+                currency: 'INR',
+                key: 'rzp_live_dZAIxh9mgzdnl7',
+                amount: this.state.amount * 100,
+                name: 'Invest APP',
+                prefill: {
+                    email: this.state.email,
+                    contact: this.state.contact,
+                    name: 'Razorpay Software'
+                },
+                theme: { color: '#F37254' }
             }
-        }).catch((error) => {
-            // handle failure
-            alert(`Error: ${error.code} | ${error.description}`);
-        });
+            RazorpayCheckout.open(options).then((data) => {
+                if (data.razorpay_payment_id != NULL) {
+                    firestore()
+                        .collection('Users')
+                        .doc(user.uid)
+                        .collection('Payments')
+                        .add({
+                            date: today,
+                            amount: this.state.amount,
+                            payment_ID: data.razorpay_payment_id
+                        }).then(() => this.setState({ requestSent: true, bodyContainerToRender: false }))
+
+                    firestore()
+                        .collection('Users')
+                        .doc(user.uid)
+                        .collection('Previous_Payment')
+                        .doc('prev_pay')
+                        .set({
+                            date: today,
+                            amount: this.state.amount,
+                            payment_ID: data.razorpay_payment_id
+                        }).then(() => console.log('Previous Payment added'))
+
+                    firestore()
+                        .collection('Users')
+                        .doc(user.uid)
+                        .collection('StartEnd_Date')
+                        .doc('startend')
+                        .get()
+                        .then(documentSnapshot => {
+
+                            if (!documentSnapshot.exists) {
+                                firestore()
+                                    .collection('Users')
+                                    .doc(user.uid)
+                                    .collection('StartEnd_Date')
+                                    .doc('startend')
+                                    .set({
+                                        start_date: today,
+                                        end_date: endDate
+                                    }).then(() => console.log('Start date added'))
+                            }
+                        });
+
+                    firestore()
+                        .collection('Users')
+                        .doc(user.uid)
+                        .collection('Total_Payment')
+                        .doc('total')
+                        .set({
+                            total_amount: this.state.total_amount + this.state.amount
+                        }).then(() => console.log('Total amount updated'))
+
+                }
+            }).catch((error) => {
+                alert(`Error: ${error.code} | ${error.description}`);
+            });
+        }
+
     }
 
     render() {
         return (
 
             <View style={styles.container}>
-                <View style={styles.buttonContainer}>
-                    <Button
-                        onPress={this._onPressButton}
-                        title="Press Me"
-                    />
+                <View style={styles.toolbar}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity>
+                            <Ionicons
+                                name="ios-arrow-back-sharp"
+                                size={40}
+                                color="#fff"
+                                style={{ left: 10 }}
+                                onPress={() => this.props.navigation.goBack()}
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>Invest APP</Text>
+                    </View>
+                    <View>
+                        <TouchableOpacity>
+                            <MaterialIcons
+                                name="account-circle"
+                                size={50}
+                                color="#fff"
+                                style={{ right: 10 }}
+                                onPress={() => this.props.navigation.navigate('Profile')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
+
+
+                <View style={styles.bodyContainer}>
+                    {
+                        this.state.requestSent &&
+                        <View style={{ height: '60%', width: '90%', alignItems: 'center' }}>
+                            <Ionicons
+                                name="checkmark-circle"
+                                size={90}
+                                color="#003f5c"
+                            />
+                            <Text style={{ top: 100, fontSize: 30, fontWeight: '600', color: '#000' }}>Paid successfully</Text>
+                        </View>
+                    }
+                    {
+                        this.state.bodyContainerToRender &&
+                        <View style={styles.contentContainer}>
+                            <TextInput
+                                placeholder="Enter email"
+                                style={styles.bankname}
+                                onChangeText={emailText => this.setState({ email: emailText })}
+                            />
+                            <TextInput
+                                placeholder="Enter contact"
+                                style={styles.accno}
+                                keyboardType="number-pad"
+                                onChangeText={contactText => this.setState({ contact: contactText })}
+                            />
+                            <TextInput
+                                placeholder="Enter amount"
+                                style={styles.ifsc}
+                                keyboardType="number-pad"
+                                onChangeText={amountText => this.setState({ amount: amountText })}
+                            />
+                            <TouchableOpacity onPress={() => this._onPressButton()} style={styles.withdrawbutton}><Text style={styles.sendreq}>Pay</Text></TouchableOpacity>
+                        </View>
+                    }
+                </View>
+
             </View>
         );
     }
@@ -59,14 +214,75 @@ export default class payment extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
     },
-    buttonContainer: {
-        margin: 20
-    },
-    alternativeLayoutButtonContainer: {
-        margin: 20,
+    toolbar: {
+        height: 70,
+        backgroundColor: '#003f5c',
+        alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between'
+
+    },
+    title: {
+        color: '#fff',
+        fontSize: 25,
+        fontWeight: '800',
+        left: 20
+    },
+    bodyContainer: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    contentContainer: {
+        width: '90%',
+        height: '80%',
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: '#ddd',
+        borderBottomWidth: 0,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 3,
+        marginLeft: 5,
+        marginRight: 5,
+        marginTop: 10,
+        padding: 30
+    },
+
+    withdrawbutton: {
+        backgroundColor: '#fb5b5a',
+        height: 50,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 180
+    },
+    bankname: {
+        height: 50,
+        backgroundColor: '#465881',
+        top: 30,
+        borderRadius: 15,
+        color: '#fff'
+    },
+    accno: {
+        height: 50,
+        backgroundColor: '#465881',
+        top: 80,
+        borderRadius: 15,
+        color: '#fff'
+    },
+    ifsc: {
+        height: 50,
+        backgroundColor: '#465881',
+        top: 130,
+        borderRadius: 15,
+        color: '#fff'
+    },
+    sendreq: {
+        color: '#fff',
+        fontSize: 22,
+        fontWeight: '500'
     }
 });

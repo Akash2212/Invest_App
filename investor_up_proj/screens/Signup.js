@@ -33,7 +33,8 @@ export default class Signup extends Component {
                 firestore()
                     .collection('Users')
                     .doc(firebaseUser.uid)
-                    .set({
+                    .collection('User_Details')
+                    .add({
                         name: this.state.username,
                         email: this.state.email
                     })

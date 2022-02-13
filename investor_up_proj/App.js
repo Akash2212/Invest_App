@@ -7,6 +7,8 @@ import Login from "./screens/Login";
 import Payment from "./screens/Payment";
 import MainScreen from "./screens/MainScreen";
 import Splash from "./screens/SplashScreen";
+import Withdraw from "./screens/Withdraw";
+import Profile from "./screens/Profile";
 
 const SPLASH_SCREEN = "Splash";
 const MAIN_SCREEN = "MainScreen";
@@ -53,6 +55,8 @@ export default class App extends Component {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="MainScreen" component={MainScreen} />
             <Stack.Screen name="Payment" component={Payment} />
+            <Stack.Screen name="Withdraw" component={Withdraw} />
+            <Stack.Screen name="Profile" component={Profile} />
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -65,7 +69,9 @@ export default class App extends Component {
             <Stack.Screen name="Signup" component={Signup} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="MainScreen" component={MainScreen} />
-
+            <Stack.Screen name="Payment" component={Payment} />
+            <Stack.Screen name="Withdraw" component={Withdraw} />
+            <Stack.Screen name="Profile" component={Profile} />
 
           </Stack.Navigator>
         </NavigationContainer>

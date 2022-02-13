@@ -2,8 +2,65 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import firestore from '@react-native-firebase/firestore'
+
+var user = auth().currentUser;
+console.log(user.uid)
 
 export default class MainScreen extends Component {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            total_amount: null,
+            previous_amount: null,
+            previous_date: '',
+            startDate: '',
+            endDate: ''
+        }
+    }
+
+    componentDidMount() {
+        firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .collection('Total_Amount')
+            .doc('total')
+            .get()
+            .then(documentSnapshot => {
+
+                if (documentSnapshot.exists) {
+                    this.setState({ total_amount: documentSnapshot.data().total_amount })
+                }
+            });
+
+        firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .collection('StartEnd_Date')
+            .doc('startend')
+            .get()
+            .then(documentSnapshot => {
+                if (documentSnapshot.exists) {
+                    this.setState({ startDate: documentSnapshot.data().start_date, endDate: documentSnapshot.data().end_date })
+                }
+            })
+
+        firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .collection('Previous_Amount')
+            .doc('prev_amount')
+            .get()
+            .then(documentSnapshot => {
+
+                if (documentSnapshot.exists) {
+                    this.setState({ previous_date: documentSnapshot.data().date, previous_amount: documentSnapshot.data().amount })
+                }
+            });
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -24,8 +81,14 @@ export default class MainScreen extends Component {
                 </View>
                 <View style={styles.bodyContainer}>
                     <View style={styles.contentContainer}>
-                        <Text style={styles.totalMoney}>Total money - ₹1000</Text>
-                        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
+                        <Text style={styles.totalMoney}>Total money - ₹{this.state.total_amount}</Text>
+                        <Text style={styles.previous}>Previous Amount details: </Text>
+                        <Text style={styles.previousDate}>Date: {this.state.previous_date}</Text>
+                        <Text style={styles.previousAmount}>Amount: ₹{this.state.previous_amount}</Text>
+                        <Text style={styles.start}>Start date: {this.state.startDate}</Text>
+                        <Text style={styles.end}>End date: {this.state.endDate}</Text>
+                        <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>Withdraw MONEY</Text></TouchableOpacity>
                     </View>
                 </View>
             </View>
@@ -77,18 +140,55 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#000',
     },
-    button: {
+    investbutton: {
         backgroundColor: '#fb5b5a',
         height: 50,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        top: 50
+        top: 100
     },
     invest: {
         fontSize: 20,
         fontWeight: '600',
         color: '#fff'
+    },
+    withdrawbutton: {
+        backgroundColor: '#fb5b5a',
+        height: 50,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 130
+    },
+    previous: {
+        fontSize: 25,
+        fontWeight: '600',
+        color: '#000',
+        top: 30
+    },
+    previousAmount: {
+        fontSize: 25,
+        fontWeight: '600',
+        color: '#000',
+    },
+    previousDate: {
+        fontSize: 25,
+        fontWeight: '600',
+        color: '#000',
+        top: 80
+    },
+    start: {
+        fontSize: 25,
+        fontWeight: '600',
+        color: '#000',
+        top: 70
+    },
+    end: {
+        fontSize: 25,
+        fontWeight: '600',
+        color: '#000',
+        top: 90
     }
 
 
