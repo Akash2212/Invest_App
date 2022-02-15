@@ -1,6 +1,7 @@
 package com.investor_up_proj;
 
 import com.facebook.react.ReactActivity;
+import com.busfor.RNGooglePayPackage;
 
 public class MainActivity extends ReactActivity {
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
@@ -13,28 +13,46 @@ import {
 } from "react-native-chart-kit";
 
 var user = auth().currentUser;
+
+var amounts = [];
+var dates = [];
+if (user != null) {
+    firestore()
+        .collection('Users')
+        .doc(user.uid)
+        .collection('Payments')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                amounts.push(documentSnapshot.data().amount)
+                dates.push(documentSnapshot.data().date)
+            });
+        });
+}
 export default class Profile extends Component {
 
 
     constructor(props) {
         super(props);
         this.state = {
-            username: ''
+            username: '',
         }
+
     }
 
     componentDidMount() {
-        firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .collection('User_Details')
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(documentSnapshot => {
-                    console.log(documentSnapshot.data().user_name);
-                    this.setState({ username: documentSnapshot.data().user_name })
+        if (user != null) {
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('User_Details')
+                .get()
+                .then(querySnapshot => {
+                    querySnapshot.forEach(documentSnapshot => {
+                        this.setState({ username: documentSnapshot.data().name })
+                    });
                 });
-            });
+        }
     }
 
     render() {
@@ -51,33 +69,25 @@ export default class Profile extends Component {
                     <Text style={styles.username}>{this.state.username}</Text>
                 </View>
                 <View style={styles.bottomContainer}>
-                    <View>
-                        <Text>Bezier Line Chart</Text>
-                        <LineChart
+                    <ScrollView
+                        horizontal={true}
+                    >
+                        <BarChart
                             data={{
-                                labels: ["January", "February", "March", "April", "May", "June"],
+                                labels: dates,
                                 datasets: [
                                     {
-                                        data: [
-                                            Math.random() * 100,
-                                            Math.random() * 100,
-                                            Math.random() * 100,
-                                            Math.random() * 100,
-                                            Math.random() * 100,
-                                            Math.random() * 100
-                                        ]
+                                        data: amounts
                                     }
                                 ]
                             }}
-                            width={Dimensions.get("window").width - 10} // from react-native
+                            width={amounts.length <= 7 ? Dimensions.get('window').width : Dimensions.get('window').width * amounts.length} // from react-native
                             height={220}
-                            yAxisLabel="$"
-                            yAxisSuffix="k"
                             yAxisInterval={1} // optional, defaults to 1
                             chartConfig={{
-                                backgroundColor: "#e26a00",
-                                backgroundGradientFrom: "#fb8c00",
-                                backgroundGradientTo: "#ffa726",
+                                backgroundColor: "#2ca",
+                                backgroundGradientFrom: "#003f5c",
+                                backgroundGradientTo: "#07648f",
                                 decimalPlaces: 2, // optional, defaults to 2dp
                                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -96,7 +106,7 @@ export default class Profile extends Component {
                                 borderRadius: 16
                             }}
                         />
-                    </View>
+                    </ScrollView>
                 </View>
             </View>
         );

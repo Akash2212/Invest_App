@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
+import PushController from './PushController'
 
 var user = auth().currentUser;
-console.log(user.uid)
 
 export default class MainScreen extends Component {
 
@@ -13,7 +13,7 @@ export default class MainScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            total_amount: null,
+            total_amount: 0,
             previous_amount: null,
             previous_date: '',
             startDate: '',
@@ -22,43 +22,45 @@ export default class MainScreen extends Component {
     }
 
     componentDidMount() {
-        firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .collection('Total_Amount')
-            .doc('total')
-            .get()
-            .then(documentSnapshot => {
+        if (user != null) {
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('Total_Amount')
+                .doc('total')
+                .get()
+                .then(documentSnapshot => {
 
-                if (documentSnapshot.exists) {
-                    this.setState({ total_amount: documentSnapshot.data().total_amount })
-                }
-            });
+                    if (documentSnapshot.exists) {
+                        this.setState({ total_amount: documentSnapshot.data().total_amount })
+                    }
+                });
 
-        firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .collection('StartEnd_Date')
-            .doc('startend')
-            .get()
-            .then(documentSnapshot => {
-                if (documentSnapshot.exists) {
-                    this.setState({ startDate: documentSnapshot.data().start_date, endDate: documentSnapshot.data().end_date })
-                }
-            })
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('StartEnd_Date')
+                .doc('startend')
+                .get()
+                .then(documentSnapshot => {
+                    if (documentSnapshot.exists) {
+                        this.setState({ startDate: documentSnapshot.data().start_date, endDate: documentSnapshot.data().end_date })
+                    }
+                })
 
-        firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .collection('Previous_Amount')
-            .doc('prev_amount')
-            .get()
-            .then(documentSnapshot => {
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('Previous_Payment')
+                .doc('prev_pay')
+                .get()
+                .then(documentSnapshot => {
 
-                if (documentSnapshot.exists) {
-                    this.setState({ previous_date: documentSnapshot.data().date, previous_amount: documentSnapshot.data().amount })
-                }
-            });
+                    if (documentSnapshot.exists) {
+                        this.setState({ previous_date: documentSnapshot.data().date, previous_amount: documentSnapshot.data().amount })
+                    }
+                });
+        }
     }
 
     render() {

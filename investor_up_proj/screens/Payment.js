@@ -1,3 +1,86 @@
+/*import React, { Component } from 'react'
+import { View, Text } from 'react-native'
+
+import { GooglePay } from 'react-native-google-pay';
+
+export default class Payment extends Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    makePay() {
+
+
+        const allowedCardNetworks = ['VISA', 'MASTERCARD'];
+        const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
+
+        const requestData = {
+            cardPaymentMethod: {
+                tokenizationSpecification: {
+                    type: 'PAYMENT_GATEWAY',
+                    // stripe (see Example):
+                    gateway: 'stripe',
+                    gatewayMerchantId: '',
+                    stripe: {
+                        publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
+                        version: '2018-11-08',
+                    },
+                    // other:
+                    gateway: 'example',
+                    gatewayMerchantId: 'exampleGatewayMerchantId',
+                },
+                allowedCardNetworks,
+                allowedCardAuthMethods,
+            },
+            transaction: {
+                totalPrice: '10',
+                totalPriceStatus: 'FINAL',
+                currencyCode: 'USD',
+            },
+            merchantName: 'Example Merchant',
+        };
+
+        // Set the environment before the payment request
+        GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+
+        // Check if Google Pay is available
+        GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
+            .then((ready) => {
+                if (ready) {
+                    // Request payment token
+                    GooglePay.requestPayment(requestData)
+                        .then((token: string) => {
+                            // Send a token to your payment gateway
+                        })
+                        .catch((error) => console.log(error.code, error.message));
+                }
+            })
+    }
+
+
+    render() {
+        return (
+            <View>
+                <Text onPress={() => this.makePay()}>Pay</Text>
+            </View>
+        );
+    }
+}
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
 import React, { Component } from 'react';
 import { Button, StyleSheet, View, TextInput, TouchableOpacity, Text } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
@@ -18,30 +101,48 @@ export default class payment extends Component {
             amount: null,
             requestSent: false,
             bodyContainerToRender: true,
-            total_amount: null
+            total_amount: 0
         }
         this._onPressButton = this._onPressButton.bind(this)
     }
 
     componentDidMount() {
-        firestore()
-            .collection('Users')
-            .doc(user.uid)
-            .collection('Total_Payment')
-            .doc('total')
-            .get()
-            .then(documentSnapshot => {
-                if (documentSnapshot.exists) {
-                    this.setState({ total_amount: documentSnapshot.data().total_amount })
-                }
-            })
+        if (user != null) {
+            console.log("Inside componentdidmount")
+
+
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('Total_Amount')
+                .doc('total')
+                .get()
+                .then(documentSnapshot => {
+                    if (documentSnapshot.exists) {
+                        console.log("document exists")
+                        this.setState({ total_amount: documentSnapshot.data().total_amount })
+                    }
+                    if (!documentSnapshot.exists) {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Total_Amount')
+                            .doc('total')
+                            .set({
+                                total_amount: 0
+                            }).then(() => console.log("Total amount is zero"))
+                    }
+
+                })
+        }
+        console.log(this.state.total_amount)
     }
 
     _onPressButton() {
 
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
-        var mm = '08';//String(today.getMonth() + 1).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
         var yyyy = today.getFullYear();
         var end_month = ''
         var end_year = ''
@@ -62,12 +163,13 @@ export default class payment extends Component {
         console.log(endDate)
 
         if (this.state.email != '' && this.state.contact != '' && this.state.amount != null && user != null) {
+            console.log(user.uid)
             var options = {
                 description: 'Invest money and grow',
                 image: 'https://i.imgur.com/3g7nmJC.png',
                 currency: 'INR',
                 key: 'rzp_live_dZAIxh9mgzdnl7',
-                amount: this.state.amount * 100,
+                amount: parseInt(this.state.amount) * 100,
                 name: 'Invest APP',
                 prefill: {
                     email: this.state.email,
@@ -77,7 +179,8 @@ export default class payment extends Component {
                 theme: { color: '#F37254' }
             }
             RazorpayCheckout.open(options).then((data) => {
-                if (data.razorpay_payment_id != NULL) {
+                console.log(data.razorpay_payment_id)
+                if (data.razorpay_payment_id != null) {
                     firestore()
                         .collection('Users')
                         .doc(user.uid)
@@ -123,10 +226,10 @@ export default class payment extends Component {
                     firestore()
                         .collection('Users')
                         .doc(user.uid)
-                        .collection('Total_Payment')
+                        .collection('Total_Amount')
                         .doc('total')
                         .set({
-                            total_amount: this.state.total_amount + this.state.amount
+                            total_amount: parseInt(this.state.total_amount) + parseInt(this.state.amount)
                         }).then(() => console.log('Total amount updated'))
 
                 }

@@ -86,6 +86,7 @@ export default class MainScreen extends Component {
                     {
                         this.state.bodyContainerToRender &&
                         <View style={styles.contentContainer}>
+                            <Text style={{ fontSize: 30, fontWeight: '700', color: '#003f5c' }}>Withdraw Money</Text>
                             <TextInput
                                 placeholder="Enter bank name"
                                 style={styles.bankname}
