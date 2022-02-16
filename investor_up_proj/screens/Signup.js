@@ -41,6 +41,28 @@ export default class Signup extends Component {
                     .then(() => {
                         console.log('User added!');
                     });
+
+                firestore()
+                    .collection('Users')
+                    .doc(firebaseUser.uid)
+                    .collection('Monthly_Payment')
+                    .doc('monthly')
+                    .set({
+                        january: 0,
+                        february: 0,
+                        march: 0,
+                        april: 0,
+                        may: 0,
+                        june: 0,
+                        july: 0,
+                        august: 0,
+                        september: 0,
+                        october: 0,
+                        november: 0,
+                        december: 0
+                    })
+                    .then(() => console.log('Monthly payment initialized'))
+                    .catch((error) => console.log(error))
             }
         })
 

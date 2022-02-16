@@ -69,44 +69,7 @@ export default class Profile extends Component {
                     <Text style={styles.username}>{this.state.username}</Text>
                 </View>
                 <View style={styles.bottomContainer}>
-                    <ScrollView
-                        horizontal={true}
-                    >
-                        <BarChart
-                            data={{
-                                labels: dates,
-                                datasets: [
-                                    {
-                                        data: amounts
-                                    }
-                                ]
-                            }}
-                            width={amounts.length <= 7 ? Dimensions.get('window').width : Dimensions.get('window').width * amounts.length} // from react-native
-                            height={220}
-                            yAxisInterval={1} // optional, defaults to 1
-                            chartConfig={{
-                                backgroundColor: "#2ca",
-                                backgroundGradientFrom: "#003f5c",
-                                backgroundGradientTo: "#07648f",
-                                decimalPlaces: 2, // optional, defaults to 2dp
-                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                style: {
-                                    borderRadius: 16
-                                },
-                                propsForDots: {
-                                    r: "6",
-                                    strokeWidth: "2",
-                                    stroke: "#ffa726"
-                                }
-                            }}
-                            bezier
-                            style={{
-                                marginVertical: 8,
-                                borderRadius: 16
-                            }}
-                        />
-                    </ScrollView>
+
                 </View>
             </View>
         );

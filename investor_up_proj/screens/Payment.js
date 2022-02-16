@@ -90,7 +90,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 var user = auth().currentUser;
-
 export default class payment extends Component {
 
     constructor(props) {
@@ -101,7 +100,20 @@ export default class payment extends Component {
             amount: null,
             requestSent: false,
             bodyContainerToRender: true,
-            total_amount: 0
+            total_amount: 0,
+
+            january: 0,
+            february: 0,
+            march: 0,
+            april: 0,
+            may: 0,
+            june: 0,
+            july: 0,
+            august: 0,
+            september: 0,
+            october: 0,
+            november: 0,
+            december: 0
         }
         this._onPressButton = this._onPressButton.bind(this)
     }
@@ -133,6 +145,29 @@ export default class payment extends Component {
                             }).then(() => console.log("Total amount is zero"))
                     }
 
+                })
+
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('Monthly_Payment')
+                .doc('monthly')
+                .get()
+                .then(documentSnapshot => {
+                    if (documentSnapshot.exists) {
+                        this.setState({ january: documentSnapshot.data().january });
+                        this.setState({ february: documentSnapshot.data().february });
+                        this.setState({ march: documentSnapshot.data().march });
+                        this.setState({ april: documentSnapshot.data().april });
+                        this.setState({ may: documentSnapshot.data().may });
+                        this.setState({ june: documentSnapshot.data().june });
+                        this.setState({ july: documentSnapshot.data().july });
+                        this.setState({ august: documentSnapshot.data().august });
+                        this.setState({ september: documentSnapshot.data().september });
+                        this.setState({ october: documentSnapshot.data().october });
+                        this.setState({ november: documentSnapshot.data().november });
+                        this.setState({ december: documentSnapshot.data().december });
+                    }
                 })
         }
         console.log(this.state.total_amount)
@@ -231,6 +266,141 @@ export default class payment extends Component {
                         .set({
                             total_amount: parseInt(this.state.total_amount) + parseInt(this.state.amount)
                         }).then(() => console.log('Total amount updated'))
+
+
+                    if (mm == '01') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                January: parseInt(this.state.january) + parseInt(this.state.amount)
+                            }).then(() => console.log("January month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '02') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                february: parseInt(this.state.february) + parseInt(this.state.amount)
+                            }).then(() => console.log("February month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '03') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                march: parseInt(this.state.march) + parseInt(this.state.amount)
+                            }).then(() => console.log("March month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '04') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                april: parseInt(this.state.april) + parseInt(this.state.amount)
+                            }).then(() => console.log("April month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '05') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                may: parseInt(this.state.may) + parseInt(this.state.amount)
+                            }).then(() => console.log("May month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '06') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                june: parseInt(this.state.june) + parseInt(this.state.amount)
+                            }).then(() => console.log("June month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '07') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                july: parseInt(this.state.july) + parseInt(this.state.amount)
+                            }).then(() => console.log("July month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '08') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                august: parseInt(this.state.august) + parseInt(this.state.amount)
+                            }).then(() => console.log("August month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '09') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                september: parseInt(this.state.september) + parseInt(this.state.amount)
+                            }).then(() => console.log("September month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '10') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                october: parseInt(this.state.october) + parseInt(this.state.amount)
+                            }).then(() => console.log("October month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '11') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                november: parseInt(this.state.november) + parseInt(this.state.amount)
+                            }).then(() => console.log("November month payment"))
+                            .catch(error => console.log(error))
+                    }
+                    else if (mm = '12') {
+                        firestore()
+                            .collection('Users')
+                            .doc(user.uid)
+                            .collection('Monthly_Payment')
+                            .doc('monthly')
+                            .set({
+                                december: parseInt(this.state.december) + parseInt(this.state.amount)
+                            }).then(() => console.log("December month payment"))
+                            .catch(error => console.log(error))
+                    }
+
 
                 }
             }).catch((error) => {

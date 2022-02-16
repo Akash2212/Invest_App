@@ -9,6 +9,8 @@ import MainScreen from "./screens/MainScreen";
 import Splash from "./screens/SplashScreen";
 import Withdraw from "./screens/Withdraw";
 import Profile from "./screens/Profile";
+import Statistics from './screens/Statistics';
+import Transaction from './screens/Transaction'
 
 const SPLASH_SCREEN = "Splash";
 const MAIN_SCREEN = "MainScreen";
@@ -57,6 +59,8 @@ export default class App extends Component {
             <Stack.Screen name="Payment" component={Payment} />
             <Stack.Screen name="Withdraw" component={Withdraw} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Statistics" component={Statistics} />
+            <Stack.Screen name="Transaction" component={Transaction} />
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -72,7 +76,8 @@ export default class App extends Component {
             <Stack.Screen name="Payment" component={Payment} />
             <Stack.Screen name="Withdraw" component={Withdraw} />
             <Stack.Screen name="Profile" component={Profile} />
-
+            <Stack.Screen name="Statistics" component={Statistics} />
+            <Stack.Screen name="Transaction" component={Transaction} />
           </Stack.Navigator>
         </NavigationContainer>
       );

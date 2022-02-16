@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import firestore from '@react-native-firebase/firestore'
 import PushController from './PushController'
 
@@ -68,7 +69,66 @@ export default class MainScreen extends Component {
             <View style={styles.container}>
                 <View style={styles.toolbar}>
                     <View><Text style={styles.title}>Invest APP</Text></View>
-                    <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity>
+                            <Entypo
+                                name="bar-graph"
+                                size={35}
+                                color="#fff"
+                                style={{ right: 15 }}
+                                onPress={() => this.props.navigation.navigate('Statistics')}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <MaterialIcons
+                                name="account-circle"
+                                size={50}
+                                color="#fff"
+                                style={{ right: 10 }}
+                                onPress={() => this.props.navigation.navigate('Profile')}
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+                <View style={styles.scrollContainer}>
+                    <ScrollView horizontal={true} >
+                        <View style={styles.scrollItem1}>
+                            <Text style={styles.totalMoney}>Total money</Text>
+                            <View style={{ height: 20 }}></View>
+                            <Text style={styles.totalMoney}>₹{this.state.total_amount}</Text>
+                        </View>
+                        <View style={styles.scrollItem2}>
+                            <Text style={styles.previous}>Previous Amount: </Text>
+                            <View style={{ height: 20 }}></View>
+                            <Text style={styles.previousDate}>Date: {this.state.previous_date}</Text>
+                            <Text style={styles.previousAmount}>Amount: ₹{this.state.previous_amount}</Text>
+                        </View>
+                        <View style={styles.scrollItem3}>
+                            <Text style={styles.start}>Start date: {this.state.startDate}</Text>
+                            <Text style={styles.end}>End date: {this.state.endDate}</Text>
+                        </View>
+                    </ScrollView>
+                </View>
+                <View style={styles.bodyContainer}>
+                    <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>Withdraw MONEY</Text></TouchableOpacity>
+                </View>
+            </View>
+            /*
+            <View style={styles.container}>
+                <View style={styles.toolbar}>
+                    <View><Text style={styles.title}>Invest APP</Text></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity>
+                            <Entypo
+                                name="bar-graph"
+                                size={35}
+                                color="#fff"
+                                style={{ right: 15 }}
+                                onPress={() => this.props.navigation.navigate('Statistics')}
+                            />
+                        </TouchableOpacity>
                         <TouchableOpacity>
                             <MaterialIcons
                                 name="account-circle"
@@ -83,17 +143,15 @@ export default class MainScreen extends Component {
                 </View>
                 <View style={styles.bodyContainer}>
                     <View style={styles.contentContainer}>
-                        <Text style={styles.totalMoney}>Total money - ₹{this.state.total_amount}</Text>
-                        <Text style={styles.previous}>Previous Amount details: </Text>
-                        <Text style={styles.previousDate}>Date: {this.state.previous_date}</Text>
-                        <Text style={styles.previousAmount}>Amount: ₹{this.state.previous_amount}</Text>
-                        <Text style={styles.start}>Start date: {this.state.startDate}</Text>
-                        <Text style={styles.end}>End date: {this.state.endDate}</Text>
+                       
+                       
+                        
                         <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
                         <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>Withdraw MONEY</Text></TouchableOpacity>
                     </View>
                 </View>
             </View>
+            */
         );
     }
 }
@@ -116,6 +174,44 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         left: 10
     },
+    scrollContainer: {
+        flex: 1.1,
+        top: 10
+    },
+    bodyContainer: {
+        flex: 1,
+        alignItems: 'center'
+    },
+    scrollItem1: {
+        height: '80%',
+        width: Dimensions.get('window').width - 50,
+        backgroundColor: '#5572a1',
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        left: 5
+    },
+    scrollItem2: {
+        height: '80%',
+        width: Dimensions.get('window').width - 50,
+        backgroundColor: '#a6e0d4',
+        borderRadius: 30,
+        left: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    scrollItem3: {
+        height: '80%',
+        width: Dimensions.get('window').width - 50,
+        backgroundColor: '#b793cf',
+        borderRadius: 30,
+        left: 15,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+
+    /*
     bodyContainer: {
         justifyContent: 'center',
         alignItems: 'center'
@@ -136,15 +232,17 @@ const styles = StyleSheet.create({
         marginRight: 5,
         marginTop: 10,
         padding: 30
-    },
+    },*/
     totalMoney: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
     },
+
     investbutton: {
-        backgroundColor: '#fb5b5a',
+        backgroundColor: '#003f5c',
         height: 50,
+        width: '80%',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -156,41 +254,39 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     withdrawbutton: {
-        backgroundColor: '#fb5b5a',
+        backgroundColor: '#003f5c',
         height: 50,
+        width: '80%',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         top: 130
     },
+
     previous: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
-        top: 30
     },
     previousAmount: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
     },
     previousDate: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
-        top: 80
     },
     start: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
-        top: 70
     },
     end: {
-        fontSize: 25,
+        fontSize: 35,
         fontWeight: '600',
         color: '#000',
-        top: 90
     }
 
 
