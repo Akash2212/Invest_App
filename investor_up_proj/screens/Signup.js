@@ -63,6 +63,7 @@ export default class Signup extends Component {
                     })
                     .then(() => console.log('Monthly payment initialized'))
                     .catch((error) => console.log(error))
+
             }
         })
 

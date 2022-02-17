@@ -1,86 +1,3 @@
-/*import React, { Component } from 'react'
-import { View, Text } from 'react-native'
-
-import { GooglePay } from 'react-native-google-pay';
-
-export default class Payment extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    makePay() {
-
-
-        const allowedCardNetworks = ['VISA', 'MASTERCARD'];
-        const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
-
-        const requestData = {
-            cardPaymentMethod: {
-                tokenizationSpecification: {
-                    type: 'PAYMENT_GATEWAY',
-                    // stripe (see Example):
-                    gateway: 'stripe',
-                    gatewayMerchantId: '',
-                    stripe: {
-                        publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
-                        version: '2018-11-08',
-                    },
-                    // other:
-                    gateway: 'example',
-                    gatewayMerchantId: 'exampleGatewayMerchantId',
-                },
-                allowedCardNetworks,
-                allowedCardAuthMethods,
-            },
-            transaction: {
-                totalPrice: '10',
-                totalPriceStatus: 'FINAL',
-                currencyCode: 'USD',
-            },
-            merchantName: 'Example Merchant',
-        };
-
-        // Set the environment before the payment request
-        GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
-
-        // Check if Google Pay is available
-        GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
-            .then((ready) => {
-                if (ready) {
-                    // Request payment token
-                    GooglePay.requestPayment(requestData)
-                        .then((token: string) => {
-                            // Send a token to your payment gateway
-                        })
-                        .catch((error) => console.log(error.code, error.message));
-                }
-            })
-    }
-
-
-    render() {
-        return (
-            <View>
-                <Text onPress={() => this.makePay()}>Pay</Text>
-            </View>
-        );
-    }
-}
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
 import React, { Component } from 'react';
 import { Button, StyleSheet, View, TextInput, TouchableOpacity, Text } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
@@ -114,6 +31,7 @@ export default class payment extends Component {
             october: 0,
             november: 0,
             december: 0
+
         }
         this._onPressButton = this._onPressButton.bind(this)
     }
@@ -147,6 +65,7 @@ export default class payment extends Component {
 
                 })
 
+
             firestore()
                 .collection('Users')
                 .doc(user.uid)
@@ -169,6 +88,7 @@ export default class payment extends Component {
                         this.setState({ december: documentSnapshot.data().december });
                     }
                 })
+
         }
         console.log(this.state.total_amount)
     }
@@ -399,6 +319,7 @@ export default class payment extends Component {
                                 december: parseInt(this.state.december) + parseInt(this.state.amount)
                             }).then(() => console.log("December month payment"))
                             .catch(error => console.log(error))
+
                     }
 
 

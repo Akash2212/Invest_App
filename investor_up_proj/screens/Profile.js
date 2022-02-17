@@ -3,32 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ScrollView } from
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-} from "react-native-chart-kit";
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 var user = auth().currentUser;
 
-var amounts = [];
-var dates = [];
-if (user != null) {
-    firestore()
-        .collection('Users')
-        .doc(user.uid)
-        .collection('Payments')
-        .get()
-        .then(querySnapshot => {
-            querySnapshot.forEach(documentSnapshot => {
-                amounts.push(documentSnapshot.data().amount)
-                dates.push(documentSnapshot.data().date)
-            });
-        });
-}
 export default class Profile extends Component {
 
 
@@ -40,25 +18,26 @@ export default class Profile extends Component {
 
     }
 
-    componentDidMount() {
-        if (user != null) {
-            firestore()
-                .collection('Users')
-                .doc(user.uid)
-                .collection('User_Details')
-                .get()
-                .then(querySnapshot => {
-                    querySnapshot.forEach(documentSnapshot => {
-                        this.setState({ username: documentSnapshot.data().name })
-                    });
-                });
-        }
-    }
 
     render() {
         return (
             <View style={styles.container}>
 
+                <View style={styles.toolbar}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity>
+                            <Ionicons
+                                name="ios-arrow-back-sharp"
+                                size={40}
+                                color="#fff"
+                                style={{ left: 10 }}
+                                onPress={() => this.props.navigation.goBack()}
+                            />
+                        </TouchableOpacity>
+                        <Text style={styles.title}>PROFILE</Text>
+                    </View>
+
+                </View>
                 <View style={styles.topContainer}>
                     <MaterialIcons
                         name="account-circle"
@@ -68,6 +47,7 @@ export default class Profile extends Component {
                     />
                     <Text style={styles.username}>{this.state.username}</Text>
                 </View>
+
                 <View style={styles.bottomContainer}>
 
                 </View>
@@ -80,6 +60,20 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    toolbar: {
+        height: 70,
+        backgroundColor: '#003f5c',
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+
+    },
+    title: {
+        color: '#fff',
+        fontSize: 25,
+        fontWeight: '800',
+        left: 20
     },
     topContainer: {
         flex: 2,

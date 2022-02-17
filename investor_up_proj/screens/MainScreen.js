@@ -111,47 +111,10 @@ export default class MainScreen extends Component {
                     </ScrollView>
                 </View>
                 <View style={styles.bodyContainer}>
-                    <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>Withdraw MONEY</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>₹  Invest MONEY</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>₹  Withdraw MONEY</Text></TouchableOpacity>
                 </View>
             </View>
-            /*
-            <View style={styles.container}>
-                <View style={styles.toolbar}>
-                    <View><Text style={styles.title}>Invest APP</Text></View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity>
-                            <Entypo
-                                name="bar-graph"
-                                size={35}
-                                color="#fff"
-                                style={{ right: 15 }}
-                                onPress={() => this.props.navigation.navigate('Statistics')}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <MaterialIcons
-                                name="account-circle"
-                                size={50}
-                                color="#fff"
-                                style={{ right: 10 }}
-                                onPress={() => this.props.navigation.navigate('Profile')}
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                </View>
-                <View style={styles.bodyContainer}>
-                    <View style={styles.contentContainer}>
-                       
-                       
-                        
-                        <TouchableOpacity style={styles.investbutton} onPress={() => this.props.navigation.navigate('Payment')}><Text style={styles.invest}>Invest MONEY</Text></TouchableOpacity>
-                        <TouchableOpacity style={styles.withdrawbutton} onPress={() => this.props.navigation.navigate('Withdraw')}><Text style={styles.invest}>Withdraw MONEY</Text></TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-            */
         );
     }
 }
