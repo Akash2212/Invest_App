@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
 import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore';
-
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 export default class Signup extends Component {
 
 
@@ -13,7 +15,8 @@ export default class Signup extends Component {
             passw: '',
             button: true,
             buttonFade: false,
-            username: ''
+            username: '',
+            phonenumber: ''
         }
         this.signup = this.signup.bind(this)
     }
@@ -34,9 +37,11 @@ export default class Signup extends Component {
                     .collection('Users')
                     .doc(firebaseUser.uid)
                     .collection('User_Details')
-                    .add({
+                    .doc(firebaseUser.email)
+                    .set({
                         name: this.state.username,
-                        email: this.state.email
+                        email: this.state.email,
+                        phonenumber: this.state.phonenumber
                     })
                     .then(() => {
                         console.log('User added!');
@@ -79,24 +84,59 @@ export default class Signup extends Component {
             <View style={styles.container}>
                 <View style={styles.signupContainer}>
                     <Text style={styles.title}>Invest APP</Text>
-                    <TextInput
-                        style={styles.username}
-                        placeholder="Enter username"
-                        onChangeText={nameText => this.setState({ username: nameText })}
-                    />
-                    <TextInput
-                        style={styles.email}
-                        placeholder="Enter email"
-                        onChangeText={emailText => this.setState({ email: emailText })}
-                    />
-                    <TextInput
-                        style={styles.passw}
-                        placeholder="Enter password"
-                        secureTextEntry={true}
-                        onChangeText={passwText => this.setState({ passw: passwText })}
-                    />
-
-                    <TouchableOpacity><Text style={{ color: '#fff', top: 110, fontSize: 15 }}>Forgot Password</Text></TouchableOpacity>
+                    <View style={{ flexDirection: 'row', top: 50 }}>
+                        <MaterialIcons
+                            name="account-circle"
+                            size={33}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.username}
+                            placeholder="Enter username"
+                            onChangeText={nameText => this.setState({ username: nameText })}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', top: 80 }}>
+                        <Ionicons
+                            name="call"
+                            size={28}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.phonenumber}
+                            placeholder="Enter phone number"
+                            onChangeText={nameText => this.setState({ phonenumber: nameText })}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', top: 100 }}>
+                        <Fontisto
+                            name="email"
+                            size={28}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.email}
+                            placeholder="Enter email"
+                            onChangeText={emailText => this.setState({ email: emailText })}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', top: 120 }}>
+                        <Ionicons
+                            name="lock-closed"
+                            size={28}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.passw}
+                            placeholder="Enter password"
+                            secureTextEntry={true}
+                            onChangeText={passwText => this.setState({ passw: passwText })}
+                        />
+                    </View>
 
                     {
                         this.state.buttonFade &&
@@ -141,25 +181,29 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
-        top: 50,
         borderRadius: 20,
-        color: '#fff'
+        color: '#fff',
     },
     email: {
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
-        top: 80,
         borderRadius: 20,
-        color: '#fff'
+        color: '#fff',
+    },
+    phonenumber: {
+        width: '90%',
+        height: 50,
+        backgroundColor: '#465881',
+        borderRadius: 20,
+        color: '#fff',
     },
     passw: {
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
-        top: 100,
         borderRadius: 20,
-        color: '#fff'
+        color: '#fff',
     },
     button: {
         backgroundColor: '#fb5b5a',

@@ -26,33 +26,65 @@ if (user != null) {
 export default class Transaction extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            status: true
+        }
     }
 
     render() {
         console.log(transactionHistory)
 
-        const Item = ({ amount, date, payment_ID }) => (
-            <View style={styles.item}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        const Item = ({ amount, date, payment_ID, status, time }) => (
 
-                    <Ionicons
-                        name="checkmark-circle"
-                        size={40}
-                        color="#4287f5"
-                    />
+
+            status == true ?
+
+                <View style={styles.item}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
+                        <Ionicons
+                            name="checkmark-circle"
+                            size={40}
+                            color="#4287f5"
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.payment}>{payment_ID}</Text>
+                        <View style={{ flexDirection: 'row' }}><Text style={styles.date}>{date}</Text><Text style={styles.time}>{time}</Text></View>
+                    </View>
+                    <View>
+                        <Text style={styles.amount}>₹{amount}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={styles.payment}>{payment_ID}</Text>
-                    <Text style={styles.date}>{date}</Text>
+
+                :
+
+
+                <View style={styles.item}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+
+                        <MaterialIcons
+                            name="cancel"
+                            size={40}
+                            color="#ff0000"
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.payment}>Error</Text>
+                        <View style={{ flexDirection: 'row' }}><Text style={styles.date}>{date}</Text><Text style={styles.time}>{time}</Text></View>
+                    </View>
+                    <View>
+                        <Text style={styles.amount}>₹{amount}</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text style={styles.amount}>₹{amount}</Text>
-                </View>
-            </View>
+
+
+
         );
 
         const renderItem = ({ item }) => (
-            <Item amount={item.amount} date={item.date} payment_ID={item.payment_ID} />
+            <Item amount={item.amount} date={item.date} payment_ID={item.payment_ID} status={item.status} time={item.time} />
         );
 
 
@@ -140,5 +172,10 @@ const styles = StyleSheet.create({
     date: {
         color: '#000',
         fontSize: 18
+    },
+    time: {
+        color: '#000',
+        fontSize: 18,
+        left: 10
     }
 });

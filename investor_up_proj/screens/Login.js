@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ToastAndroid } from 'react-native'
 import auth from '@react-native-firebase/auth'
+import Fontisto from 'react-native-vector-icons/Fontisto'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 export default class Login extends Component {
 
@@ -26,7 +28,9 @@ export default class Login extends Component {
         }
 
         auth().onAuthStateChanged(firebaseUser => {
-            this.props.navigation.navigate('MainScreen')
+            if (firebaseUser != null) {
+                this.props.navigation.navigate('MainScreen')
+            }
         })
 
     }
@@ -36,24 +40,44 @@ export default class Login extends Component {
         this.props.navigation.goBack()
     }
 
+    forgotPassw() {
+        this.props.navigation.navigate('ForgotPassword')
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <View style={styles.loginContainer}>
                     <Text style={styles.title}>Invest APP</Text>
-                    <TextInput
-                        style={styles.email}
-                        placeholder="Enter email"
-                        onChangeText={emailText => this.setState({ email: emailText })}
-                    />
-                    <TextInput
-                        style={styles.passw}
-                        placeholder="Enter password"
-                        secureTextEntry={true}
-                        onChangeText={passwText => this.setState({ passw: passwText })}
-                    />
+                    <View style={{ flexDirection: 'row', top: 80 }}>
+                        <Fontisto
+                            name="email"
+                            size={28}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.email}
+                            placeholder="Enter email"
+                            onChangeText={emailText => this.setState({ email: emailText })}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', top: 100 }}>
+                        <Ionicons
+                            name="lock-closed"
+                            size={28}
+                            color="#fff"
+                            style={{ top: 5, right: 10 }}
+                        />
+                        <TextInput
+                            style={styles.passw}
+                            placeholder="Enter password"
+                            secureTextEntry={true}
+                            onChangeText={passwText => this.setState({ passw: passwText })}
+                        />
+                    </View>
 
-                    <TouchableOpacity><Text style={{ color: '#fff', top: 110, fontSize: 15 }}>Forgot Password</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.forgotPassw()}><Text style={{ color: '#fff', top: 110, fontSize: 15 }}>Forgot Password</Text></TouchableOpacity>
 
                     {
                         this.state.buttonFade &&
@@ -98,17 +122,15 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
-        top: 50,
         borderRadius: 20,
-        color: '#fff'
+        color: '#fff',
     },
     passw: {
         width: '90%',
         height: 50,
         backgroundColor: '#465881',
-        top: 100,
         borderRadius: 20,
-        color: '#fff'
+        color: '#fff',
     },
     button: {
         backgroundColor: '#fb5b5a',

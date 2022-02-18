@@ -25,9 +25,14 @@ if (user != null) {
         .collection('Payments')
         .get()
         .then(querySnapshot => {
+            amounts.push(0)
+            dates.push(0)
             querySnapshot.forEach(documentSnapshot => {
-                amounts.push(documentSnapshot.data().amount)
-                dates.push(documentSnapshot.data().date)
+                if (documentSnapshot.data().status) {
+
+                    amounts.push(parseInt(documentSnapshot.data().amount))
+                    dates.push(documentSnapshot.data().date)
+                }
             });
         });
 
@@ -39,6 +44,7 @@ if (user != null) {
         .get()
         .then(documentSnapshot => {
             if (documentSnapshot.exists) {
+                monthly_amounts.push(0)
                 monthly_amounts.push(documentSnapshot.data().january)
                 monthly_amounts.push(documentSnapshot.data().february)
                 monthly_amounts.push(documentSnapshot.data().march)
@@ -53,6 +59,7 @@ if (user != null) {
                 monthly_amounts.push(documentSnapshot.data().december)
             }
         })
+    console.log(amounts)
 
 }
 export default class Statistics extends Component {
@@ -61,26 +68,15 @@ export default class Statistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            button1: true,
-            button2: false,
+            button1: false,
+            button2: true,
 
         }
 
     }
 
     componentDidMount() {
-        if (user != null) {
-            firestore()
-                .collection('Users')
-                .doc(user.uid)
-                .collection('User_Details')
-                .get()
-                .then(querySnapshot => {
-                    querySnapshot.forEach(documentSnapshot => {
-                        this.setState({ username: documentSnapshot.data().name })
-                    });
-                });
-        }
+
     }
 
     weekly() {
@@ -168,7 +164,7 @@ export default class Statistics extends Component {
                         {this.state.button2 &&
                             <LineChart
                                 data={{
-                                    labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                    labels: ["0", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                                     datasets: [
                                         {
                                             data: monthly_amounts

@@ -7,6 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 var user = auth().currentUser;
 
+
 export default class Profile extends Component {
 
 
@@ -16,6 +17,29 @@ export default class Profile extends Component {
             username: '',
         }
 
+    }
+
+    componentDidMount() {
+
+        if (user != null) {
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('User_Details')
+                .doc(user.email)
+                .get()
+                .then(documentSnapshot => {
+                    if (documentSnapshot.exists) {
+                        this.setState({ username: documentSnapshot.data().name })
+
+                    }
+                })
+                .catch(error => console.log(error))
+        }
+    }
+
+    logout() {
+        auth().signOut().then(() => this.props.navigation.navigate('Signup'))
     }
 
 
@@ -46,10 +70,14 @@ export default class Profile extends Component {
                         onPress={() => this.props.navigation.navigate('Profile')}
                     />
                     <Text style={styles.username}>{this.state.username}</Text>
+                    <TouchableOpacity onPress={() => this.logout()} style={styles.logout}><Text style={styles.logoutText}>Logout</Text></TouchableOpacity>
                 </View>
 
                 <View style={styles.bottomContainer}>
-
+                    <Text style={styles.aboutTitle}>About</Text>
+                    <View style={styles.about}>
+                        <Text style={styles.aboutText}>We are the latest platform for digital payments. Our goal is to help people invest any chunk of amount daily for a fixed amount of time and earn a good rate of interest for this.</Text>
+                    </View>
                 </View>
             </View>
         );
@@ -89,5 +117,37 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: '700',
         color: '#000'
+    },
+    aboutTitle: {
+        fontSize: 40,
+        color: '#000',
+        fontWeight: '700',
+        bottom: 20
+    },
+    about: {
+        width: '80%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 5,
+        borderRadius: 20,
+        padding: 10
+    },
+    aboutText: {
+        fontSize: 27,
+        fontStyle: 'italic'
+    },
+    logout: {
+        width: '80%',
+        height: 50,
+        backgroundColor: '#003f5c',
+        borderRadius: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: 30
+    },
+    logoutText: {
+        color: '#fff',
+        fontWeight: '800',
+        fontSize: 30
     }
 })

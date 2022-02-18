@@ -7,6 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 var user = auth().currentUser;
+
 export default class payment extends Component {
 
     constructor(props) {
@@ -39,6 +40,18 @@ export default class payment extends Component {
     componentDidMount() {
         if (user != null) {
             console.log("Inside componentdidmount")
+
+            firestore()
+                .collection('Users')
+                .doc(user.uid)
+                .collection('User_Details')
+                .doc(user.email)
+                .get()
+                .then(documentSnapshot => {
+                    if (documentSnapshot.exists) {
+                        this.setState({ contact: documentSnapshot.data().phonenumber })
+                    }
+                })
 
 
             firestore()
@@ -95,6 +108,8 @@ export default class payment extends Component {
 
     _onPressButton() {
 
+        var time = new Date().toLocaleTimeString();
+        console.log(time)
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -117,7 +132,7 @@ export default class payment extends Component {
 
         console.log(endDate)
 
-        if (this.state.email != '' && this.state.contact != '' && this.state.amount != null && user != null) {
+        if (this.state.amount != null && user != null) {
             console.log(user.uid)
             var options = {
                 description: 'Invest money and grow',
@@ -127,7 +142,7 @@ export default class payment extends Component {
                 amount: parseInt(this.state.amount) * 100,
                 name: 'Invest APP',
                 prefill: {
-                    email: this.state.email,
+                    email: user.email,
                     contact: this.state.contact,
                     name: 'Razorpay Software'
                 },
@@ -142,6 +157,8 @@ export default class payment extends Component {
                         .collection('Payments')
                         .add({
                             date: today,
+                            time: time,
+                            status: true,
                             amount: this.state.amount,
                             payment_ID: data.razorpay_payment_id
                         }).then(() => this.setState({ requestSent: true, bodyContainerToRender: false }))
@@ -195,7 +212,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                January: parseInt(this.state.january) + parseInt(this.state.amount)
+                                january: parseInt(this.state.january) + parseInt(this.state.amount),
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("January month payment"))
                             .catch(error => console.log(error))
                     }
@@ -206,7 +234,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                february: parseInt(this.state.february) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: parseInt(this.state.february) + parseInt(this.state.amount),
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("February month payment"))
                             .catch(error => console.log(error))
                     }
@@ -217,7 +256,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                march: parseInt(this.state.march) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: parseInt(this.state.march) + parseInt(this.state.amount),
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("March month payment"))
                             .catch(error => console.log(error))
                     }
@@ -228,7 +278,19 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                april: parseInt(this.state.april) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: parseInt(this.state.april) + parseInt(this.state.amount),
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
+
                             }).then(() => console.log("April month payment"))
                             .catch(error => console.log(error))
                     }
@@ -239,7 +301,19 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                may: parseInt(this.state.may) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: parseInt(this.state.may) + parseInt(this.state.amount),
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
+
                             }).then(() => console.log("May month payment"))
                             .catch(error => console.log(error))
                     }
@@ -250,7 +324,20 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                june: parseInt(this.state.june) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: parseInt(this.state.june) + parseInt(this.state.amount),
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
+
+
                             }).then(() => console.log("June month payment"))
                             .catch(error => console.log(error))
                     }
@@ -261,7 +348,19 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                july: parseInt(this.state.july) + parseInt(this.state.amount)
+
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: parseInt(this.state.july) + parseInt(this.state.amount),
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("July month payment"))
                             .catch(error => console.log(error))
                     }
@@ -272,7 +371,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                august: parseInt(this.state.august) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: parseInt(this.state.august) + parseInt(this.state.amount),
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("August month payment"))
                             .catch(error => console.log(error))
                     }
@@ -283,7 +393,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                september: parseInt(this.state.september) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: parseInt(this.state.september) + parseInt(this.state.amount),
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("September month payment"))
                             .catch(error => console.log(error))
                     }
@@ -294,7 +415,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                october: parseInt(this.state.october) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: parseInt(this.state.october) + parseInt(this.state.amount),
+                                november: this.state.november,
+                                december: this.state.december,
                             }).then(() => console.log("October month payment"))
                             .catch(error => console.log(error))
                     }
@@ -305,7 +437,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                november: parseInt(this.state.november) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: parseInt(this.state.november) + parseInt(this.state.amount),
+                                december: this.state.december,
                             }).then(() => console.log("November month payment"))
                             .catch(error => console.log(error))
                     }
@@ -316,7 +459,18 @@ export default class payment extends Component {
                             .collection('Monthly_Payment')
                             .doc('monthly')
                             .set({
-                                december: parseInt(this.state.december) + parseInt(this.state.amount)
+                                january: this.state.january,
+                                february: this.state.february,
+                                march: this.state.march,
+                                april: this.state.april,
+                                may: this.state.may,
+                                june: this.state.june,
+                                july: this.state.july,
+                                august: this.state.august,
+                                september: this.state.september,
+                                october: this.state.october,
+                                november: this.state.november,
+                                december: parseInt(this.state.december) + parseInt(this.state.amount),
                             }).then(() => console.log("December month payment"))
                             .catch(error => console.log(error))
 
@@ -326,6 +480,17 @@ export default class payment extends Component {
                 }
             }).catch((error) => {
                 alert(`Error: ${error.code} | ${error.description}`);
+                firestore()
+                    .collection('Users')
+                    .doc(user.uid)
+                    .collection('Payments')
+                    .add({
+                        date: today,
+                        time: time,
+                        amount: this.state.amount,
+                        status: false,
+                        payment_ID: error.code
+                    })
             });
         }
 
@@ -378,23 +543,17 @@ export default class payment extends Component {
                     {
                         this.state.bodyContainerToRender &&
                         <View style={styles.contentContainer}>
-                            <TextInput
-                                placeholder="Enter email"
-                                style={styles.bankname}
-                                onChangeText={emailText => this.setState({ email: emailText })}
-                            />
-                            <TextInput
-                                placeholder="Enter contact"
-                                style={styles.accno}
-                                keyboardType="number-pad"
-                                onChangeText={contactText => this.setState({ contact: contactText })}
-                            />
-                            <TextInput
-                                placeholder="Enter amount"
-                                style={styles.ifsc}
-                                keyboardType="number-pad"
-                                onChangeText={amountText => this.setState({ amount: amountText })}
-                            />
+
+                            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 70, color: '#000' }}>₹</Text>
+                                <TextInput
+                                    placeholder="₹"
+                                    placeholderTextColor="#9e9e9d"
+                                    style={styles.amount}
+                                    keyboardType="number-pad"
+                                    onChangeText={amountText => this.setState({ amount: amountText })}
+                                />
+                            </View>
                             <TouchableOpacity onPress={() => this._onPressButton()} style={styles.withdrawbutton}><Text style={styles.sendreq}>Pay</Text></TouchableOpacity>
                         </View>
                     }
@@ -429,7 +588,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         width: '90%',
-        height: '80%',
+        height: '70%',
         borderWidth: 1,
         borderRadius: 2,
         borderColor: '#ddd',
@@ -442,7 +601,17 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         marginRight: 5,
         marginTop: 10,
-        padding: 30
+        padding: 30,
+    },
+    amount: {
+        width: '50%',
+        heihgt: 50,
+        backgroundColor: '#003f5c',
+        top: 50,
+        borderRadius: 15,
+        color: '#fff',
+        fontSize: 30,
+        textAlign: 'center'
     },
 
     withdrawbutton: {
@@ -451,12 +620,11 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        top: 180
+        top: 90
     },
     bankname: {
         height: 50,
         backgroundColor: '#465881',
-        top: 30,
         borderRadius: 15,
         color: '#fff'
     },
