@@ -4,32 +4,24 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-} from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 
 var user = auth().currentUser;
-var months = []
-var monthly_amounts = []
+
+var monthly_amounts = [];
 var amounts = [];
 var dates = [];
+
 if (user != null) {
+
     firestore()
         .collection('Users')
         .doc(user.uid)
         .collection('Payments')
         .get()
         .then(querySnapshot => {
-            amounts.push(0)
-            dates.push(0)
             querySnapshot.forEach(documentSnapshot => {
                 if (documentSnapshot.data().status) {
-
                     amounts.push(parseInt(documentSnapshot.data().amount))
                     dates.push(documentSnapshot.data().date)
                 }
@@ -44,38 +36,42 @@ if (user != null) {
         .get()
         .then(documentSnapshot => {
             if (documentSnapshot.exists) {
-                monthly_amounts.push(0)
-                monthly_amounts.push(documentSnapshot.data().january)
-                monthly_amounts.push(documentSnapshot.data().february)
-                monthly_amounts.push(documentSnapshot.data().march)
-                monthly_amounts.push(documentSnapshot.data().april)
-                monthly_amounts.push(documentSnapshot.data().may)
-                monthly_amounts.push(documentSnapshot.data().june)
-                monthly_amounts.push(documentSnapshot.data().july)
-                monthly_amounts.push(documentSnapshot.data().august)
-                monthly_amounts.push(documentSnapshot.data().september)
-                monthly_amounts.push(documentSnapshot.data().october)
-                monthly_amounts.push(documentSnapshot.data().november)
-                monthly_amounts.push(documentSnapshot.data().december)
+                console.log(parseInt(documentSnapshot.data().february))
+                monthly_amounts.push(parseInt(documentSnapshot.data().january))
+                monthly_amounts.push(parseInt(documentSnapshot.data().february))
+                monthly_amounts.push(parseInt(documentSnapshot.data().march))
+                monthly_amounts.push(parseInt(documentSnapshot.data().april))
+                monthly_amounts.push(parseInt(documentSnapshot.data().may))
+                monthly_amounts.push(parseInt(documentSnapshot.data().june))
+                monthly_amounts.push(parseInt(documentSnapshot.data().july))
+                monthly_amounts.push(parseInt(documentSnapshot.data().august))
+                monthly_amounts.push(parseInt(documentSnapshot.data().september))
+                monthly_amounts.push(parseInt(documentSnapshot.data().october))
+                monthly_amounts.push(parseInt(documentSnapshot.data().november))
+                monthly_amounts.push(parseInt(documentSnapshot.data().december))
             }
         })
-    console.log(amounts)
 
 }
+
+
+
+
+
 export default class Statistics extends Component {
 
 
     constructor(props) {
         super(props);
         this.state = {
-            button1: false,
-            button2: true,
-
+            button1: true,
+            button2: false,
         }
 
     }
 
     componentDidMount() {
+
 
     }
 
@@ -125,10 +121,10 @@ export default class Statistics extends Component {
                         {this.state.button1 &&
                             <LineChart
                                 data={{
-                                    labels: dates,
+                                    labels: dates.length == 0 ? [0] : dates,
                                     datasets: [
                                         {
-                                            data: amounts
+                                            data: amounts.length == 0 ? [0] : amounts
                                         }
                                     ]
 
@@ -160,14 +156,14 @@ export default class Statistics extends Component {
                                 }}
                             />
                         }
-
-                        {this.state.button2 &&
+                        {
+                            this.state.button2 &&
                             <LineChart
                                 data={{
-                                    labels: ["0", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                                    labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
                                     datasets: [
                                         {
-                                            data: monthly_amounts
+                                            data: monthly_amounts.length == 0 ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] : monthly_amounts
                                         }
                                     ]
 
@@ -200,6 +196,7 @@ export default class Statistics extends Component {
                             />
                         }
 
+
                     </ScrollView>
                     <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => this.weekly()} style={this.state.button1 == true ? styles.radioButton1Clicked : styles.radioButton1}>
@@ -215,6 +212,7 @@ export default class Statistics extends Component {
                 </View>
             </View >
         );
+
     }
 
 }

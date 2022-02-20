@@ -29,7 +29,7 @@ export default class Login extends Component {
 
         auth().onAuthStateChanged(firebaseUser => {
             if (firebaseUser != null) {
-                this.props.navigation.navigate('MainScreen')
+                this.props.navigation.replace('MainScreen', { firebaseUser: firebaseUser })
             }
         })
 
@@ -59,6 +59,7 @@ export default class Login extends Component {
                         <TextInput
                             style={styles.email}
                             placeholder="Enter email"
+                            placeholderTextColor="#9e9e9d"
                             onChangeText={emailText => this.setState({ email: emailText })}
                         />
                     </View>
@@ -72,12 +73,13 @@ export default class Login extends Component {
                         <TextInput
                             style={styles.passw}
                             placeholder="Enter password"
+                            placeholderTextColor="#9e9e9d"
                             secureTextEntry={true}
                             onChangeText={passwText => this.setState({ passw: passwText })}
                         />
                     </View>
 
-                    <TouchableOpacity onPress={() => this.forgotPassw()}><Text style={{ color: '#fff', top: 110, fontSize: 15 }}>Forgot Password</Text></TouchableOpacity>
+                    <Text onPress={() => this.forgotPassw()} style={{ color: '#fff', top: 110, fontSize: 15 }}>Forgot Password</Text>
 
                     {
                         this.state.buttonFade &&
@@ -93,7 +95,7 @@ export default class Login extends Component {
                         </TouchableOpacity>
                     }
 
-                    <TouchableOpacity><Text onPress={() => this.gologin()} style={{ color: '#fff', top: 180, fontSize: 18 }}>Signup</Text></TouchableOpacity>
+                    <TouchableOpacity><Text onPress={() => this.gosignup()} style={{ color: '#fff', top: 180, fontSize: 18 }}>Signup</Text></TouchableOpacity>
 
                 </View>
             </View >

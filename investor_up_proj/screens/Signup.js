@@ -32,7 +32,7 @@ export default class Signup extends Component {
 
         auth().onAuthStateChanged(firebaseUser => {
             if (firebaseUser != null) {
-                this.props.navigation.replace('MainScreen')
+                this.props.navigation.replace('MainScreen', { firebaseUser: firebaseUser })
                 firestore()
                     .collection('Users')
                     .doc(firebaseUser.uid)
@@ -94,6 +94,7 @@ export default class Signup extends Component {
                         <TextInput
                             style={styles.username}
                             placeholder="Enter username"
+                            placeholderTextColor="#9e9e9d"
                             onChangeText={nameText => this.setState({ username: nameText })}
                         />
                     </View>
@@ -107,6 +108,7 @@ export default class Signup extends Component {
                         <TextInput
                             style={styles.phonenumber}
                             placeholder="Enter phone number"
+                            placeholderTextColor="#9e9e9d"
                             onChangeText={nameText => this.setState({ phonenumber: nameText })}
                         />
                     </View>
@@ -120,6 +122,7 @@ export default class Signup extends Component {
                         <TextInput
                             style={styles.email}
                             placeholder="Enter email"
+                            placeholderTextColor="#9e9e9d"
                             onChangeText={emailText => this.setState({ email: emailText })}
                         />
                     </View>
@@ -133,6 +136,7 @@ export default class Signup extends Component {
                         <TextInput
                             style={styles.passw}
                             placeholder="Enter password"
+                            placeholderTextColor="#9e9e9d"
                             secureTextEntry={true}
                             onChangeText={passwText => this.setState({ passw: passwText })}
                         />

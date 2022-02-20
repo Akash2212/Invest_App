@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-var user = auth().currentUser;
+var user = null;
 
 export default class MainScreen extends Component {
 
@@ -16,15 +16,26 @@ export default class MainScreen extends Component {
             bankname: '',
             accno: '',
             ifsc: '',
+            amount: '',
             requestSent: false,
             bodyContainerToRender: true
         }
         this.sendreq = this.sendreq.bind(this)
     }
 
+    componentDidMount() {
+        user = auth().currentUser;
+    }
+
     sendreq() {
 
-        if (this.state.bankname != '' && this.state.accno != '' && this.state.ifsc != '' && user != null) {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        var date = dd + '/' + mm + '/' + yyyy;
+
+        if (this.state.bankname != '' && this.state.accno != '' && this.state.ifsc != '' && user != null && this.state.amount != '') {
             firestore()
                 .collection('Users')
                 .doc(user.uid)
@@ -32,7 +43,9 @@ export default class MainScreen extends Component {
                 .add({
                     bank_name: this.state.bankname,
                     account_number: this.state.accno,
-                    ifsc_code: this.state.ifsc
+                    ifsc_code: this.state.ifsc,
+                    amount: this.state.amount,
+                    date: date,
                 })
                 .then(() => this.setState({ requestSent: true, bodyContainerToRender: false }))
                 .catch((error) => ToastAndroid.show(error.toString(), ToastAndroid.SHORT))
@@ -89,19 +102,31 @@ export default class MainScreen extends Component {
                             <Text style={{ fontSize: 30, fontWeight: '700', color: '#003f5c' }}>Withdraw Money</Text>
                             <TextInput
                                 placeholder="Enter bank name"
+                                placeholderTextColor="#9e9e9d"
                                 style={styles.bankname}
                                 onChangeText={bname => this.setState({ bankname: bname })}
                             />
                             <TextInput
                                 placeholder="Enter account number"
+                                placeholderTextColor="#9e9e9d"
                                 style={styles.accno}
                                 onChangeText={acc => this.setState({ accno: acc })}
                             />
                             <TextInput
                                 placeholder="Enter ifsc code"
+                                placeholderTextColor="#9e9e9d"
                                 style={styles.ifsc}
                                 onChangeText={ifsccode => this.setState({ ifsc: ifsccode })}
                             />
+                            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                <TextInput
+                                    placeholder="₹"
+                                    placeholderTextColor="#9e9e9d"
+                                    style={styles.amount}
+                                    keyboardType="number-pad"
+                                    onChangeText={amountText => this.setState({ amount: amountText })}
+                                />
+                            </View>
                             <TouchableOpacity onPress={() => this.sendreq()} style={styles.withdrawbutton}><Text style={styles.sendreq}>Send request</Text></TouchableOpacity>
                         </View>
                     }
@@ -158,26 +183,26 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        top: 180
+        top: 150
     },
     bankname: {
         height: 50,
         backgroundColor: '#465881',
-        top: 30,
+        top: 20,
         borderRadius: 15,
         color: '#fff'
     },
     accno: {
         height: 50,
         backgroundColor: '#465881',
-        top: 80,
+        top: 60,
         borderRadius: 15,
         color: '#fff'
     },
     ifsc: {
         height: 50,
         backgroundColor: '#465881',
-        top: 130,
+        top: 100,
         borderRadius: 15,
         color: '#fff'
     },
@@ -185,7 +210,17 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 22,
         fontWeight: '500'
-    }
+    },
+    amount: {
+        width: '50%',
+        heihgt: 50,
+        backgroundColor: '#465881',
+        top: 130,
+        borderRadius: 15,
+        color: '#fff',
+        fontSize: 30,
+        textAlign: 'center'
+    },
 
 
 })

@@ -5,7 +5,7 @@ import firestore from '@react-native-firebase/firestore'
 import auth from '@react-native-firebase/auth'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-var user = auth().currentUser;
+var user = null;
 
 
 export default class Profile extends Component {
@@ -20,6 +20,8 @@ export default class Profile extends Component {
     }
 
     componentDidMount() {
+
+        user = auth().currentUser;
 
         if (user != null) {
             firestore()

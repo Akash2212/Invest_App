@@ -6,7 +6,7 @@ import firestore from '@react-native-firebase/firestore'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-var user = auth().currentUser;
+var user = null;
 
 export default class payment extends Component {
 
@@ -38,6 +38,7 @@ export default class payment extends Component {
     }
 
     componentDidMount() {
+        user = auth().currentUser;
         if (user != null) {
             console.log("Inside componentdidmount")
 

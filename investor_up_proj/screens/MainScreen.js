@@ -6,7 +6,11 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import firestore from '@react-native-firebase/firestore'
 import PushController from './PushController'
 
-var user = auth().currentUser;
+var user = null;
+
+var monthly_amounts = [];
+var amounts = [];
+var dates = [];
 
 export default class MainScreen extends Component {
 
@@ -23,6 +27,7 @@ export default class MainScreen extends Component {
     }
 
     componentDidMount() {
+        user = auth().currentUser;
         if (user != null) {
             firestore()
                 .collection('Users')
@@ -63,6 +68,51 @@ export default class MainScreen extends Component {
                 });
         }
     }
+
+    /*
+
+    goToStatistics() {
+
+        firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .collection('Monthly_Payment')
+            .doc('monthly')
+            .get()
+            .then(documentSnapshot => {
+                if (documentSnapshot.exists) {
+                    console.log(parseInt(documentSnapshot.data().february))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().january))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().february))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().march))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().april))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().may))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().june))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().july))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().august))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().september))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().october))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().november))
+                    monthly_amounts.push(parseInt(documentSnapshot.data().december))
+                    firestore()
+                        .collection('Users')
+                        .doc(user.uid)
+                        .collection('Payments')
+                        .get()
+                        .then(querySnapshot => {
+                            querySnapshot.forEach(documentSnapshot => {
+                                if (documentSnapshot.data().status) {
+                                    amounts.push(parseInt(documentSnapshot.data().amount))
+                                    dates.push(documentSnapshot.data().date)
+                                    this.props.navigation.navigate('Statistics', { monthly_amounts, amounts, dates })
+                                }
+                            });
+                        });
+                }
+            })
+
+    }
+    */
 
     render() {
         return (

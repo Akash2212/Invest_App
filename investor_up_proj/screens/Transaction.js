@@ -6,8 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 var user = auth().currentUser;
-
 var transactionHistory = [];
+
 
 if (user != null) {
     firestore()
@@ -32,7 +32,14 @@ export default class Transaction extends Component {
         }
     }
 
+    componentDidMount() {
+
+    }
+
     render() {
+
+
+
         console.log(transactionHistory)
 
         const Item = ({ amount, date, payment_ID, status, time }) => (
